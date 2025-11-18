@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { Send, Plus, Command, Square, Box, Terminal, Cpu, Activity, Zap, Menu, MoreHorizontal, Settings, Download, Hash, Clock, Shield } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
+import Layout from "@/components/Layout";
 
 // Mock Data
 const MOCK_HISTORY = [
@@ -34,7 +35,6 @@ export default function ChatInterface() {
       latency: 12
     }
   ]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { register, handleSubmit, reset } = useForm<{ prompt: string }>();
@@ -74,100 +74,10 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-background text-foreground font-sans overflow-hidden">
-      
-      {/* Sidebar */}
-      <AnimatePresence mode="wait">
-        {isSidebarOpen && (
-          <motion.aside 
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 280, opacity: 1 }}
-            exit={{ width: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "circOut" }}
-            className="h-full border-r border-border bg-secondary/30 backdrop-blur-sm flex flex-col flex-shrink-0"
-          >
-            <div className="p-4 border-b border-border flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm font-mono tracking-tighter font-bold">
-                <Box className="w-4 h-4" />
-                <span>NEXUS_OS</span>
-              </div>
-              <Button variant="ghost" size="icon" className="h-6 w-6 rounded-none hover:bg-primary hover:text-primary-foreground" onClick={() => setIsSidebarOpen(false)}>
-                <Menu className="w-4 h-4" />
-              </Button>
-            </div>
-
-            <div className="p-2 flex-1 overflow-hidden">
-              <Button className="w-full justify-start gap-2 rounded-none border border-dashed border-border bg-transparent hover:bg-primary hover:text-primary-foreground transition-all mb-4" variant="outline">
-                <Plus className="w-4 h-4" />
-                <span className="text-xs uppercase tracking-wider font-mono">New Session</span>
-              </Button>
-
-              <div className="space-y-6">
-                <div className="px-2">
-                  <h3 className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-2">Active Threads</h3>
-                  <div className="space-y-1">
-                    {MOCK_HISTORY.map((item) => (
-                      <button key={item.id} className="w-full text-left px-2 py-2 text-xs hover:bg-border/50 group flex items-center gap-2 transition-colors border-l-2 border-transparent hover:border-primary">
-                        <Hash className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
-                        <span className="truncate font-medium">{item.title}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="px-2">
-                  <h3 className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono mb-2">System Metrics</h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="border border-border p-2 bg-background/50">
-                      <div className="text-[10px] text-muted-foreground font-mono">CPU_LOAD</div>
-                      <div className="text-sm font-mono font-bold flex items-center gap-1">
-                        <Activity className="w-3 h-3" /> 12%
-                      </div>
-                    </div>
-                    <div className="border border-border p-2 bg-background/50">
-                      <div className="text-[10px] text-muted-foreground font-mono">LATENCY</div>
-                      <div className="text-sm font-mono font-bold flex items-center gap-1">
-                        <Zap className="w-3 h-3" /> 24ms
-                      </div>
-                    </div>
-                    <div className="col-span-2 border border-border p-2 bg-background/50">
-                      <div className="text-[10px] text-muted-foreground font-mono">STATUS</div>
-                      <div className="text-xs font-mono text-green-600 flex items-center gap-1">
-                        <div className="w-1.5 h-1.5 bg-green-500 animate-pulse" />
-                        OPERATIONAL
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 border-t border-border">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary flex items-center justify-center text-primary-foreground font-mono text-xs">
-                  OP
-                </div>
-                <div className="flex-1 overflow-hidden">
-                  <div className="text-xs font-bold truncate">OPERATOR_01</div>
-                  <div className="text-[10px] text-muted-foreground font-mono truncate">ID: 884-2X-99</div>
-                </div>
-                <Settings className="w-4 h-4 text-muted-foreground cursor-pointer hover:text-foreground" />
-              </div>
-            </div>
-          </motion.aside>
-        )}
-      </AnimatePresence>
-
-      {/* Main Chat Area */}
-      <main className="flex-1 flex flex-col min-w-0 relative">
+    <Layout>
         {/* Header */}
-        <header className="h-14 border-b border-border flex items-center justify-between px-6 bg-background/95 backdrop-blur z-10">
+        <header className="h-14 border-b border-border flex items-center justify-between px-6 bg-background/95 backdrop-blur z-10 ml-10 lg:ml-0">
           <div className="flex items-center gap-4">
-            {!isSidebarOpen && (
-               <Button variant="ghost" size="icon" className="h-8 w-8 rounded-none hover:bg-primary hover:text-primary-foreground" onClick={() => setIsSidebarOpen(true)}>
-                 <Menu className="w-4 h-4" />
-               </Button>
-            )}
             <div>
               <h1 className="text-sm font-bold tracking-tight uppercase">System Architecture Analysis</h1>
               <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono">
@@ -300,8 +210,6 @@ export default function ChatInterface() {
             </form>
           </div>
         </div>
-
-      </main>
-    </div>
+    </Layout>
   );
 }
