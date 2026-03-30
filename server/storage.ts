@@ -1,4 +1,4 @@
-import { type User, type InsertUser } from "@shared/schema";
+import { type User, type InsertUser, type ConnectedRepo } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 // modify the interface with any CRUD methods
@@ -8,13 +8,18 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  getConnectedRepos(): Promise<ConnectedRepo[]>;
+  addConnectedRepo(repo: ConnectedRepo): Promise<ConnectedRepo>;
+  removeConnectedRepo(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
+  private repos: Map<string, ConnectedRepo>;
 
   constructor() {
     this.users = new Map();
+    this.repos = new Map();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -32,6 +37,19 @@ export class MemStorage implements IStorage {
     const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
+  }
+
+  async getConnectedRepos(): Promise<ConnectedRepo[]> {
+    return Array.from(this.repos.values());
+  }
+
+  async addConnectedRepo(repo: ConnectedRepo): Promise<ConnectedRepo> {
+    this.repos.set(repo.id, repo);
+    return repo;
+  }
+
+  async removeConnectedRepo(id: string): Promise<boolean> {
+    return this.repos.delete(id);
   }
 }
 

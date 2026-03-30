@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import ChatInterface from "@/pages/chat";
 import Workflows from "@/pages/workflows";
+import Repositories from "@/pages/repositories";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -11,6 +12,7 @@ function Router() {
     <Switch>
       <Route path="/" component={ChatInterface} />
       <Route path="/workflows" component={Workflows} />
+      <Route path="/repositories" component={Repositories} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, Link } from "wouter";
-import { Box, Menu, Plus, Hash, Activity, Zap, Settings, MessageSquare, GitGraph } from "lucide-react";
+import { Box, Menu, Plus, Hash, Activity, Zap, Settings, MessageSquare, GitGraph, HardDrive } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
@@ -50,12 +50,21 @@ export default function Layout({ children }: LayoutProps) {
                     </Button>
                   </Link>
                   <Link href="/workflows">
-                    <Button 
-                      variant={location === "/workflows" ? "secondary" : "ghost"} 
+                    <Button
+                      variant={location === "/workflows" ? "secondary" : "ghost"}
                       className={`w-full justify-start gap-2 rounded-none h-9 ${location === "/workflows" ? "border-l-2 border-primary bg-secondary" : "border-l-2 border-transparent"}`}
                     >
                       <GitGraph className="w-4 h-4" />
                       <span className="font-mono text-xs">Workflow_Builder</span>
+                    </Button>
+                  </Link>
+                  <Link href="/repositories">
+                    <Button
+                      variant={location === "/repositories" ? "secondary" : "ghost"}
+                      className={`w-full justify-start gap-2 rounded-none h-9 ${location === "/repositories" ? "border-l-2 border-primary bg-secondary" : "border-l-2 border-transparent"}`}
+                    >
+                      <HardDrive className="w-4 h-4" />
+                      <span className="font-mono text-xs">Local_Repos</span>
                     </Button>
                   </Link>
                 </div>
