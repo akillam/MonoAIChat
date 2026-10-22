@@ -21,6 +21,7 @@ export function log(message: string, source = "express") {
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
+    ...viteConfig.server,
     middlewareMode: true,
     hmr: { server },
     allowedHosts: true as const,
@@ -31,9 +32,9 @@ export async function setupVite(app: Express, server: Server) {
     configFile: false,
     customLogger: {
       ...viteLogger,
+      // A denied file request is logged as an error, but must not stop the server.
       error: (msg, options) => {
         viteLogger.error(msg, options);
-        process.exit(1);
       },
     },
     server: serverOptions,
@@ -65,6 +66,8 @@ export async function setupVite(app: Express, server: Server) {
       next(e);
     }
   });
+
+  return vite;
 }
 
 export function serveStatic(app: Express) {
