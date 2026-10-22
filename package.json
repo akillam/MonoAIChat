@@ -9,7 +9,7 @@
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc",
-    "test:security": "node --test tests/security-dependencies.test.mjs",
+    "test:security": "node --import tsx --test tests/security-dependencies.test.mjs",
     "db:push": "drizzle-kit push"
   },
   "notes": "removed framer motion dependency",
